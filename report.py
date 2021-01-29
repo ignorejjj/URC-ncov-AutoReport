@@ -54,7 +54,7 @@ class Report(object):
         }
 
         url = "http://weixine.ustc.edu.cn/2020/daliy_report"
-        session.post(url, data=data, headers=headers)
+        session.post(url, data=data)
         data = session.get("http://weixine.ustc.edu.cn/2020").text
         soup = BeautifulSoup(data, 'html.parser')
         pattern = re.compile("2021-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}")
