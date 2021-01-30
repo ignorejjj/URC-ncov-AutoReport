@@ -42,15 +42,23 @@ class Report(object):
 
         headers = {
             'authority': 'weixine.ustc.edu.cn',
-            'origin': 'http://weixine.ustc.edu.cn',
-            'upgrade-insecure-requests': '1',
-            'content-type': 'application/x-www-form-urlencoded',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.100 Safari/537.36',
-            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-            'referer': 'http://weixine.ustc.edu.cn/2020/',
+            'path': '/2020/daliy_report',
+            'scheme': 'https',
+            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+            'accept-encoding': 'gzip, deflate, br',
             'accept-language': 'zh-CN,zh;q=0.9',
-            'Connection': 'close',
-            'cookie': 'PHPSESSID=' + cookies.get("PHPSESSID") + ";XSRF-TOKEN=" + cookies.get("XSRF-TOKEN") + ";laravel_session="+cookies.get("laravel_session"),
+            'cache-control': 'max-age=0',
+            'content-length': '312',
+            'content-type': 'application/x-www-form-urlencoded',
+            'cookie': '_ga=GA1.3.691870649.1576756096; experimentation_subject_id=eyJfcmFpbHMiOnsibWVzc2FnZSI6IkltRXpORGxrTkRobUxUWXhZemN0TkRVM09TMWlabUZsTFdFeU0yTXpNell4TlRrek1pST0iLCJleHAiOm51bGwsInB1ciI6ImNvb2tpZS5leHBlcmltZW50YXRpb25fc3ViamVjdF9pZCJ9fQ%3D%3D--520cc61cdaeffb0025bd7f74fc23e83860685e31; PHPSESSID=ST-e0f99993ca664407a7d4cf360e787c16; XSRF-TOKEN=eyJpdiI6IjJcL1wvTGt4dXBJS3AzK1JUNnNrUlRldz09IiwidmFsdWUiOiJsS0hOckJGN0tUZkFKQnhTZ1wvTlwvekwraVM5eGdJXC9HODhSczViVkZzTjBrYWszamFoQzltVG56ejhCcWxncVFlSGlXdlFCWk9FMllHZ1E4dFZFamlwUT09IiwibWFjIjoiYzhhZDBiYmYyZDk1NTczOWEwMDdmNmY4NDkxODI1ZWQ3NjU2NDgzNmViMzRkMGE1NGI2MDRlYTViNjVhMmQ2ZSJ9; laravel_session=eyJpdiI6IlVEckoxZnVLbVIyN3FqcUJ4dkxHUnc9PSIsInZhbHVlIjoiSzNoNWZ4Zld5TlltXC84VFlZQXA1VFFxY1RkUzVBbDJDSVVsb3k0bE8zemhjNWsrQ25vQ3VJWmtUMlM0dnlScnVMXC9QQjR4UjlNRnh6V2J5YmtRSWQwZz09IiwibWFjIjoiMjBjYWY1ODFlYzZmMjIxOGJiNmMwZWRiZjI3OGRjZTNkZDg5YjEyNjIwNDRlOTdjMDFhYjNkYmI5MmM3ZjJjNyJ9',
+            'origin': 'https://weixine.ustc.edu.cn',
+            'referer': 'https://weixine.ustc.edu.cn/2020/home',
+            'sec-fetch-dest': 'document',
+            'sec-fetch-mode': 'navigate',
+            'sec-fetch-site': 'same-origin',
+            'sec-fetch-user': '?1',
+            'upgrade-insecure-requests': '1',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36',
         }
 
         url = "http://weixine.ustc.edu.cn/2020/daliy_report"
@@ -60,6 +68,7 @@ class Report(object):
         pattern = re.compile("2021-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}")
         token = soup.find(
             "span", {"style": "position: relative; top: 5px; color: #666;"})
+        print(token.text)
         flag = False
         if pattern.search(token.text) is not None:
             date = pattern.search(token.text).group()
