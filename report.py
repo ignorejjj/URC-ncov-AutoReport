@@ -42,23 +42,15 @@ class Report(object):
 
         headers = {
             'authority': 'weixine.ustc.edu.cn',
-            'path': '/2020/daliy_report',
-            'scheme': 'https',
-            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-            'accept-encoding': 'gzip, deflate, br',
-            'accept-language': 'zh-CN,zh;q=0.9',
-            'cache-control': 'max-age=0',
-            'content-length': '312',
-            'content-type': 'application/x-www-form-urlencoded',
-            'cookie': '_ga=GA1.3.691870649.1576756096; experimentation_subject_id=eyJfcmFpbHMiOnsibWVzc2FnZSI6IkltRXpORGxrTkRobUxUWXhZemN0TkRVM09TMWlabUZsTFdFeU0yTXpNell4TlRrek1pST0iLCJleHAiOm51bGwsInB1ciI6ImNvb2tpZS5leHBlcmltZW50YXRpb25fc3ViamVjdF9pZCJ9fQ%3D%3D--520cc61cdaeffb0025bd7f74fc23e83860685e31; PHPSESSID=ST-e0f99993ca664407a7d4cf360e787c16; XSRF-TOKEN=eyJpdiI6IjJcL1wvTGt4dXBJS3AzK1JUNnNrUlRldz09IiwidmFsdWUiOiJsS0hOckJGN0tUZkFKQnhTZ1wvTlwvekwraVM5eGdJXC9HODhSczViVkZzTjBrYWszamFoQzltVG56ejhCcWxncVFlSGlXdlFCWk9FMllHZ1E4dFZFamlwUT09IiwibWFjIjoiYzhhZDBiYmYyZDk1NTczOWEwMDdmNmY4NDkxODI1ZWQ3NjU2NDgzNmViMzRkMGE1NGI2MDRlYTViNjVhMmQ2ZSJ9; laravel_session=eyJpdiI6IlVEckoxZnVLbVIyN3FqcUJ4dkxHUnc9PSIsInZhbHVlIjoiSzNoNWZ4Zld5TlltXC84VFlZQXA1VFFxY1RkUzVBbDJDSVVsb3k0bE8zemhjNWsrQ25vQ3VJWmtUMlM0dnlScnVMXC9QQjR4UjlNRnh6V2J5YmtRSWQwZz09IiwibWFjIjoiMjBjYWY1ODFlYzZmMjIxOGJiNmMwZWRiZjI3OGRjZTNkZDg5YjEyNjIwNDRlOTdjMDFhYjNkYmI5MmM3ZjJjNyJ9',
-            'origin': 'https://weixine.ustc.edu.cn',
-            'referer': 'https://weixine.ustc.edu.cn/2020/home',
-            'sec-fetch-dest': 'document',
-            'sec-fetch-mode': 'navigate',
-            'sec-fetch-site': 'same-origin',
-            'sec-fetch-user': '?1',
+            'origin': 'http://weixine.ustc.edu.cn',
             'upgrade-insecure-requests': '1',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.104 Safari/537.36',
+            'content-type': 'application/x-www-form-urlencoded',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.100 Safari/537.36',
+            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+            'referer': 'http://weixine.ustc.edu.cn/2020/',
+            'accept-language': 'zh-CN,zh;q=0.9',
+            'Connection': 'close',
+            'cookie': 'PHPSESSID=' + cookies.get("PHPSESSID") + ";XSRF-TOKEN=" + cookies.get("XSRF-TOKEN") + ";laravel_session="+cookies.get("laravel_session"),
         }
 
         url = "http://weixine.ustc.edu.cn/2020/daliy_report"
@@ -68,7 +60,6 @@ class Report(object):
         pattern = re.compile("2021-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}")
         token = soup.find(
             "span", {"style": "position: relative; top: 5px; color: #666;"})
-        print(token.text)
         flag = False
         if pattern.search(token.text) is not None:
             date = pattern.search(token.text).group()
@@ -90,13 +81,29 @@ class Report(object):
         url = "https://passport.ustc.edu.cn/login?service=http%3A%2F%2Fweixine.ustc.edu.cn%2F2020%2Fcaslogin"
         data = {
             'model': 'uplogin.jsp',
-            'service': 'http://weixine.ustc.edu.cn/2020/caslogin',
+            'service': 'https://weixine.ustc.edu.cn/2020/caslogin',
             'username': self.stuid,
             'password': str(self.password),
         }
+        s='_ga=GA1.3.691870649.1576756096; experimentation_subject_id=eyJfcmFpbHMiOnsibWVzc2FnZSI6IkltRXpORGxrTkRobUxUWXhZemN0TkRVM09TMWlabUZsTFdFeU0yTXpNell4TlRrek1pST0iLCJleHAiOm51bGwsInB1ciI6ImNvb2tpZS5leHBlcmltZW50YXRpb25fc3ViamVjdF9pZCJ9fQ==--520cc61cdaeffb0025bd7f74fc23e83860685e31; JSESSIONID=9764DF3775E328EF87520A48496729D2'
+        cookies={}
+        for line in s.split(';'):   
+            name,value=line.strip().split('=',1)
+            cookies[name]=value
+        headers = {
+            'Cookie': cookies ,
+            'Host': 'passport.ustc.edu.cn',
+            'Connection': 'keep-alive',
+            'Origin': 'https://passport.ustc.edu.cn',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+            'Referer': 'https://passport.ustc.edu.cn/login?service=https%3A%2F%2Fweixine.ustc.edu.cn%2F2020%2Fcaslogin',
+        }
         session = requests.Session()
-        session.post(url, data=data)
-
+        session.post(url, data=data, cookies=cookies)
+        cook = session.cookies
+        print(cook)
         print("login...")
         return session
 
@@ -108,7 +115,7 @@ if __name__ == "__main__":
     parser.add_argument('password', help='your CAS password', type=str)
     args = parser.parse_args()
     autorepoter = Report(stuid=args.stuid, password=args.password, data_path=args.data_path)
-    count = 10
+    count = 5
     while count != 0:
         ret = autorepoter.report()
         if ret != False:
