@@ -17,20 +17,29 @@ class Report(object):
 
     def report(self):
         loginsuccess = False
-        retrycount = 5
+        retrycount = 1
         while (not loginsuccess) and retrycount:
-            session = self.login()
-            cookies = session.cookies
-            getform = session.get("http://weixine.ustc.edu.cn/2020")
+            url = "https://passport.ustc.edu.cn/login"
+            data = {
+                'model': 'uplogin.jsp',
+                'service': 'https://weixine.ustc.edu.cn/2020/caslogin',
+                'showCode': '',
+                'username': self.stuid,
+                'password': str(self.password)
+            }
+            session = requests.Session()
+            r = session.post(url, data=data)
+            print("login...")
             retrycount = retrycount - 1
-            if getform.url != "https://weixine.ustc.edu.cn/2020/home":
+            if r.url != "https://weixine.ustc.edu.cn/2020/home":
+                print(r.url)
                 print("Login Failed! Retry...")
             else:
                 print("Login Successful!")
                 loginsuccess = True
         if not loginsuccess:
             return False
-        data = getform.text
+        data = r.text
         data = data.encode('ascii','ignore').decode('utf-8','ignore')
         soup = BeautifulSoup(data, 'html.parser')
         token = soup.find("input", {"name": "_token"})['value']
@@ -39,19 +48,6 @@ class Report(object):
             data = f.read()
             data = json.loads(data)
             data["_token"]=token
-
-        headers = {
-            'authority': 'weixine.ustc.edu.cn',
-            'origin': 'http://weixine.ustc.edu.cn',
-            'upgrade-insecure-requests': '1',
-            'content-type': 'application/x-www-form-urlencoded',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.100 Safari/537.36',
-            'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-            'referer': 'http://weixine.ustc.edu.cn/2020/',
-            'accept-language': 'zh-CN,zh;q=0.9',
-            'Connection': 'close',
-            'cookie': 'PHPSESSID=' + cookies.get("PHPSESSID") + ";XSRF-TOKEN=" + cookies.get("XSRF-TOKEN") + ";laravel_session="+cookies.get("laravel_session"),
-        }
 
         url = "http://weixine.ustc.edu.cn/2020/daliy_report"
         session.post(url, data=data)
@@ -77,36 +73,7 @@ class Report(object):
             print("Report SUCCESSFUL!")
         return flag
 
-    def login(self):
-        url = "https://passport.ustc.edu.cn/login?service=http%3A%2F%2Fweixine.ustc.edu.cn%2F2020%2Fcaslogin"
-        data = {
-            'model': 'uplogin.jsp',
-            'service': 'https://weixine.ustc.edu.cn/2020/caslogin',
-            'username': self.stuid,
-            'password': str(self.password),
-        }
-        s='_ga=GA1.3.691870649.1576756096; experimentation_subject_id=eyJfcmFpbHMiOnsibWVzc2FnZSI6IkltRXpORGxrTkRobUxUWXhZemN0TkRVM09TMWlabUZsTFdFeU0yTXpNell4TlRrek1pST0iLCJleHAiOm51bGwsInB1ciI6ImNvb2tpZS5leHBlcmltZW50YXRpb25fc3ViamVjdF9pZCJ9fQ==--520cc61cdaeffb0025bd7f74fc23e83860685e31; JSESSIONID=9764DF3775E328EF87520A48496729D2'
-        cookies={}
-        for line in s.split(';'):   
-            name,value=line.strip().split('=',1)
-            cookies[name]=value
-        headers = {
-            'Cookie': cookies ,
-            'Host': 'passport.ustc.edu.cn',
-            'Connection': 'keep-alive',
-            'Origin': 'https://passport.ustc.edu.cn',
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.190 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
-            'Referer': 'https://passport.ustc.edu.cn/login?service=https%3A%2F%2Fweixine.ustc.edu.cn%2F2020%2Fcaslogin',
-        }
-        session = requests.Session()
-        session.post(url, data=data, cookies=cookies)
-        cook = session.cookies
-        print(cook)
-        print("login...")
-        return session
-
+        
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='URC nCov auto report script.')
@@ -115,7 +82,7 @@ if __name__ == "__main__":
     parser.add_argument('password', help='your CAS password', type=str)
     args = parser.parse_args()
     autorepoter = Report(stuid=args.stuid, password=args.password, data_path=args.data_path)
-    count = 5
+    count = 1
     while count != 0:
         ret = autorepoter.report()
         if ret != False:
