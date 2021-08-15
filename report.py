@@ -60,9 +60,9 @@ class Report(object):
             'cookie': "PHPSESSID=" + cookies.get("PHPSESSID") + ";XSRF-TOKEN=" + cookies.get("XSRF-TOKEN") + ";laravel_session="+cookies.get("laravel_session"),
         }    
             
-        url = "http://weixine.ustc.edu.cn/2020/daliy_report"
+        url = "https://weixine.ustc.edu.cn/2020/daliy_report"
         print(session.post(url, data=data, headers=headers))
-        data = session.get("http://weixine.ustc.edu.cn/2020").text
+        data = session.get("https://weixine.ustc.edu.cn/2020").text
         soup = BeautifulSoup(data, 'html.parser')
         pattern = re.compile("2021-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}")
         token = soup.find(
