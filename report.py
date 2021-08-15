@@ -43,14 +43,25 @@ class Report(object):
         data = data.encode('ascii','ignore').decode('utf-8','ignore')
         soup = BeautifulSoup(data, 'html.parser')
         token = soup.find("input", {"name": "_token"})['value']
-
+        cookies = session.cookies
+        
         with open(self.data_path, "r+") as f:
             data = f.read()
             data = json.loads(data)
             data["_token"]=token
 
+        headers = {
+            'authority': 'weixine.ustc.edu.cn',
+            'origin': 'https://weixine.ustc.edu.cn',
+            'upgrade-insecure-requests': '1',
+            'content-type': 'application/x-www-form-urlencoded',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36',
+            'referer': 'https://weixine.ustc.edu.cn/2020/home',
+            'cookie': "PHPSESSID=" + cookies.get("PHPSESSID") + ";XSRF-TOKEN=" + cookies.get("XSRF-TOKEN") + ";laravel_session="+cookies.get("laravel_session"),
+        }    
+            
         url = "http://weixine.ustc.edu.cn/2020/daliy_report"
-        session.post(url, data=data)
+        print(session.post(url, data=data, headers=headers))
         data = session.get("http://weixine.ustc.edu.cn/2020").text
         soup = BeautifulSoup(data, 'html.parser')
         pattern = re.compile("2021-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}")
