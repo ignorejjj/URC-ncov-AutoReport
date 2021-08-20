@@ -8,6 +8,7 @@ import re
 import sys
 import argparse
 from bs4 import BeautifulSoup
+import base64
 
 class Report(object):
     def __init__(self, stuid, password, data_path):
@@ -20,14 +21,23 @@ class Report(object):
         retrycount = 5
         while (not loginsuccess) and retrycount:
             url = "https://passport.ustc.edu.cn/login"
+            session = requests.Session()
+            response = session.get(url)
+            response = BeautifulSoup(response.content, 'html.parser')
+            login_form = response.find_all(class_='loginForm form-style')[0]
+            CAS_LT = login_form.find_next(id='CAS_LT')['value']
+            vcode = self.get_vcode(session)
             data = {
                 'model': 'uplogin.jsp',
                 'service': 'https://weixine.ustc.edu.cn/2020/caslogin',
-                'showCode': '',
+                'showCode': '1',
                 'username': self.stuid,
-                'password': str(self.password)
+                'password': str(self.password),
+                'warn': '',
+                'CAS_LT': CAS_LT,
+                'LT': vcode,
+                'button': '',
             }
-            session = requests.Session()
             r = session.post(url, data=data)
             print("login...")
             retrycount = retrycount - 1
@@ -84,6 +94,26 @@ class Report(object):
             print("Report SUCCESSFUL!")
         return flag
 
+    def get_vcode(self, session):
+        
+        host = 'https://aip.baidubce.com/oauth/2.0/token?grant_type=client_credentials&client_id=' + self.baidu_ak + '&client_secret=' + self.baidu_sk
+        response = requests.get(host)
+        access_token = response.json()['access_token']        
+        response = session.get("https://passport.ustc.edu.cn/validatecode.jsp?type=login")
+        image = response.content
+
+        request_url = "https://aip.baidubce.com/rest/2.0/ocr/v1/numbers"
+        # 二进制方式打开图片文件
+        # f = open('img.png', 'rb')
+        img = base64.b64encode(image)
+
+        params = {"image":img}
+        # access_token = '[调用鉴权接口获取的token]'
+        request_url = request_url + "?access_token=" + access_token
+        headers = {'content-type': 'application/x-www-form-urlencoded'}
+        response = requests.post(request_url, data=params, headers=headers)
+        vcode = response.json()['words_result'][0]['words']
+        return vcode
         
 
 if __name__ == "__main__":
