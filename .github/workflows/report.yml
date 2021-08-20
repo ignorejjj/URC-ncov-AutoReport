@@ -28,5 +28,7 @@ jobs:
       env:
         STUID: ${{ secrets.Stuid }}
         PASSWORD: ${{ secrets.Password }}
+        BAIDU_API_KEY: ${{ secrets.Baidu_api_key }}
+        BAIDU_API_SECRET_KEY: ${{ secrets.Baidu_api_secret_key }}
       run: |
-        python report.py data.json "$STUID" "$PASSWORD"
+        python report.py data.json "$STUID" "$PASSWORD" "$BAIDU_API_KEY" "$BAIDU_API_SECRET_KEY"
