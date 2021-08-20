@@ -131,8 +131,7 @@ if __name__ == "__main__":
     
     args = parser.parse_args()
 
-    autorepoter = Report(stuid=args.stuid, password=args.password, data_path=args.data_path,\
-        baidu_api_key=args.baidu_api_key, baidu_api_secret_key=args.baidu_api_secret_key)
+    autorepoter = Report(stuid=args.stuid, password=args.password, data_path=args.data_path, baidu_api_key=args.baidu_api_key, baidu_api_secret_key=args.baidu_api_secret_key)
     count = 5
     while count != 0:
         ret = autorepoter.report()
