@@ -11,10 +11,12 @@ from bs4 import BeautifulSoup
 import base64
 
 class Report(object):
-    def __init__(self, stuid, password, data_path):
+    def __init__(self, stuid, password, data_path, baidu_ak, baidu_sk):
         self.stuid = stuid
         self.password = password
         self.data_path = data_path
+        self.baidu_ak = baidu_ak
+        self.baidu_sk = baidu_sk
 
     def report(self):
         loginsuccess = False
@@ -22,10 +24,13 @@ class Report(object):
         while (not loginsuccess) and retrycount:
             url = "https://passport.ustc.edu.cn/login"
             session = requests.Session()
+
+            # get CAS_LT
             response = session.get(url)
             response = BeautifulSoup(response.content, 'html.parser')
             login_form = response.find_all(class_='loginForm form-style')[0]
             CAS_LT = login_form.find_next(id='CAS_LT')['value']
+            # get validate code
             vcode = self.get_vcode(session)
             data = {
                 'model': 'uplogin.jsp',
@@ -121,8 +126,11 @@ if __name__ == "__main__":
     parser.add_argument('data_path', help='path to your own data used for post method', type=str)
     parser.add_argument('stuid', help='your student number', type=str)
     parser.add_argument('password', help='your CAS password', type=str)
+    parser.add_argument('baidu_api_ket', help='baidu api key', type=str)
+    parser.add_argument('baidu_api_secret_key', help='baidu api secret key', type=str)
     args = parser.parse_args()
-    autorepoter = Report(stuid=args.stuid, password=args.password, data_path=args.data_path)
+    autorepoter = Report(stuid=args.stuid, password=args.password, data_path=args.data_path,\
+         baidu_ak=args.baidu_api_key, baidu_sk=args.baidu_api_secret_key)
     count = 5
     while count != 0:
         ret = autorepoter.report()
