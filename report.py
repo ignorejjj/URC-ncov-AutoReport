@@ -126,14 +126,13 @@ if __name__ == "__main__":
     parser.add_argument('data_path', help='path to your own data used for post method', type=str)
     parser.add_argument('stuid', help='your student number', type=str)
     parser.add_argument('password', help='your CAS password', type=str)
-    parser.add_argument('emergency_data', help='emergency data', type=str)
-    parser.add_argument('baidu_ak', help='baidu api key', type=str)
-    parser.add_argument('baidu_sk', help='baidu api secret key', type=str)
+    parser.add_argument('baidu_api_key', help='baidu api key', type=str)
+    parser.add_argument('baidu_api_secret_key', help='baidu api secret key', type=str)
     
     args = parser.parse_args()
 
-    autorepoter = Report(stuid=args.stuid, password=args.password, data_path=args.data_path, emergency_data=args.emergency_data,\
-        baidu_ak=args.baidu_ak, baidu_sk=args.baidu_sk)
+    autorepoter = Report(stuid=args.stuid, password=args.password, data_path=args.data_path,\
+        baidu_api_key=args.baidu_api_key, baidu_api_secret_key=args.baidu_api_secret_key)
     count = 5
     while count != 0:
         ret = autorepoter.report()
