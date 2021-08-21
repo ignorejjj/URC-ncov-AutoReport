@@ -11,12 +11,12 @@ from bs4 import BeautifulSoup
 import base64
 
 class Report(object):
-    def __init__(self, stuid, password, data_path, baidu_ak, baidu_sk):
+    def __init__(self, stuid, password, data_path, baidu_api_key, baidu_api_secret_key):
         self.stuid = stuid
         self.password = password
         self.data_path = data_path
-        self.baidu_ak = baidu_ak
-        self.baidu_sk = baidu_sk
+        self.baidu_ak = baidu_api_key
+        self.baidu_sk = baidu_api_secret_key
 
     def report(self):
         loginsuccess = False
